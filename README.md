@@ -17,7 +17,7 @@ Using  `ca-bakery`  you need just to make sure projects which are part of the CI
 Documentation: [ca-bakery.readthedocs.io](http://ca-bakery.readthedocs.io/en/latest/)
 
 #### `recipe.yml`:
-```yml
+```yaml
 #---------------------------------#
 #      general configuration      #
 #---------------------------------#
