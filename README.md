@@ -2,7 +2,7 @@
 
 A build tool based on Cake Build. 
 
-![](images/cupcake.png?raw=true)
+![](docs/images/cupcake.png?raw=true)
 
 
 
