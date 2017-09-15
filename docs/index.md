@@ -12,7 +12,7 @@ Using the custom DSL you can define:
 
 Using  `ca-bakery`  you need just to make sure projects which are part of the CI pipeline must implement a defined interface and once done you can feed `ca-bakery` with your `recipe.yml` file.
 
-![](docs/images/cupcake.png?raw=true)
+![](images/cupcake.png?raw=true)
 
 #### `recipe.yml`:
 ```yaml
