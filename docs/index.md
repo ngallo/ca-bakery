@@ -5,16 +5,14 @@
 Using the custom DSL you can define:
 - **Components:**  *projects part of the CI pipeline*
 - **Environment:** *environment variables used by the CI pipeline*
-- **Bundlers:** *a bundler is a collection of steps to be executed to create a bundle*
-- **Artifacts:** *an artifact is a deployable component and it is built using one or more bundles*
+- **Bundlers:** *a bundler is a collection of steps to be executed in order to create a bundle*
+- **Artifacts:** *an artifact is a deployable component and it is built using one or more bundlers*
 
-`ca-bakery` can be used also to bundle multple projects in one single deployable artifact. For instance you may be developing a web application composed by a NetCore backend project and an Angular client project as well as this you may want to bundle both applications in a single deployable artifact where the NetCore app would be serving the Angular app to the client.
+`ca-bakery` can be used also to bundle multple projects in one single deployable artifact. For instance you may be developing a web application composed by a NetCore backend project and an Angular client project as well as this you may want to bundle both applications into a single deployable artifact where the NetCore app would be serving the Angular app to the client.
 
 Using  `ca-bakery`  you need just to make sure projects which are part of the CI pipeline must implement a defined interface and once done you can feed `ca-bakery` with your `recipe.yml` file.
 
-![](images/cupcake.png?raw=true)
-
-Documentation: [ca-bakery.readthedocs.io](http://ca-bakery.readthedocs.io/en/latest/)
+![](docs/images/cupcake.png?raw=true)
 
 #### `recipe.yml`:
 ```yaml
@@ -78,7 +76,7 @@ bundlers:
           path:
           extensions: /**.js/**
         to:
-          path: src\public\js
+          path: src/public/js
 #---------------------------------#
 #     artifacts configuration     #
 #---------------------------------#

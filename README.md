@@ -12,9 +12,9 @@ Using the custom DSL you can define:
 
 Using  `ca-bakery`  you need just to make sure projects which are part of the CI pipeline must implement a defined interface and once done you can feed `ca-bakery` with your `recipe.yml` file.
 
-![](docs/images/cupcake.png?raw=true)
+Here you can find the full documentation: [ca-bakery.readthedocs.io](http://ca-bakery.readthedocs.io/en/latest/)
 
-Documentation: [ca-bakery.readthedocs.io](http://ca-bakery.readthedocs.io/en/latest/)
+![](docs/images/cupcake.png?raw=true)
 
 #### `recipe.yml`:
 ```yaml
@@ -78,7 +78,7 @@ bundlers:
           path:
           extensions: /**.js/**
         to:
-          path: src\public\js
+          path: src/public/js
 #---------------------------------#
 #     artifacts configuration     #
 #---------------------------------#
