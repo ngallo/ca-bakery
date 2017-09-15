@@ -1,6 +1,6 @@
 # ca-bakery
 
-`ca-bakery` is a tool based on [Cake Build](https://cakebuild.net/) which allow you to define your CI pipeline in a `recipe.yml` file which is implemented using a custom DSL (Domain Specific Language).
+`ca-bakery` is a tool based on [cake build](https://cakebuild.net/) which allow you to define your CI pipeline in a `recipe.yml` file which is implemented using a custom DSL (Domain Specific Language).
 
 Using the custom DSL you can define:
 - **Components:**  *projects part of the CI pipeline*
