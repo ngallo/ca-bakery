@@ -4,6 +4,11 @@ readonly var target = Argument("target", "Default");
 readonly var rootDir = Argument("root", "../../");
 readonly var cake = Argument("recipe", "recipe.yml");
 
+/********** GLOBAL VARIABLES **********/
+
+readonly int version = 1;
+readonly bool isAPPVEYOR = (EnvironmentVariable(EnvKeys.AppVeyor) ?? "").ToUpper() == "TRUE";
+
 /********** TOOLS & ADDINS **********/
 
 #addin "Cake.FileHelpers"
@@ -15,6 +20,10 @@ readonly var cake = Argument("recipe", "recipe.yml");
 public class EnvKeys
 {
   public const string CakeBuildVersion = "CAKE_BUILD_VERSION";
+
+  public const string AppVeyor= "APPVEYOR";
+  public const string AppVeyorBuildNumber= "APPVEYOR_BUILD_NUMBER";
+  public const string AppVeyorBuildVersion= "APPVEYOR_BUILD_VERSION";
 }
 
 public class CakeYamlBuild
@@ -96,12 +105,12 @@ Action cakeYamlValidateScript = () =>
 
 Func<string> cakeGetBuildNumber = () =>
 {
-  return isAPPVEYOR ? EnvironmentVariable("APPVEYOR_BUILD_NUMBER") : EnvironmentVariable(EnvKeys.CakeBuildVersion);
+  return isAPPVEYOR ? EnvironmentVariable(EnvKey.AppVeyorBuildNumber) : EnvironmentVariable(EnvKeys.CakeBuildVersion);
 };
 
 Func<string> cakeGetBuildVersion = () =>
 {
-  return isAPPVEYOR ? EnvironmentVariable("APPVEYOR_BUILD_VERSION") : ParseReleaseNotes(cakeYamlGetReleaseNotes()).Version.ToString() + "." + cakeGetBuildNumber();
+  return isAPPVEYOR ? EnvironmentVariable(EnvKey.APPVEYOR_BUILD_VERSION) : ParseReleaseNotes(cakeYamlGetReleaseNotes()).Version.ToString() + "." + cakeGetBuildNumber();
 };
 
 Func<String> cakeYamlGetReleaseNotes = () =>
@@ -143,11 +152,6 @@ Action<String> BuildComponents = (String npmCommand) =>
     }
   }*/
 };
-
-/********** GLOBAL VARIABLES **********/
-
-readonly int version = 1;
-readonly bool isAPPVEYOR = (EnvironmentVariable("APPVEYOR") ?? "").ToUpper() == "TRUE";
 
 /********** SETUP / TEARDOWN **********/
 
