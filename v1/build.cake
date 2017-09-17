@@ -190,6 +190,13 @@ Teardown(context =>
 Task("Clean")
   .Does(() =>
   {
+    Information("Cleaning the dist directory");
+    if (DirectoryExists(distDir)) {
+      DeleteDirectory(distDir, new DeleteDirectorySettings {
+        Recursive = true,
+        Force = true
+      });
+    }
     BuildComponents("npm run clean");
   });
 
@@ -220,19 +227,55 @@ Task("Package")
       var artifactDir = distDir + "/" + artifact.path;
       var artifactDirPath = MakeAbsolute(Directory(artifactDir));
       CreateDirectory(artifactDirPath);
-      /*if ((artifact.BundleType ?? "").ToLower() == "cmd") {
-        var workingDirectory =  MakeAbsolute(Directory("."));
-        Information("working directory: " + workingDirectory);
-        var script = "bundle-" + artifact.Name + ".cmd";
-        Information("running script: " + script);
-        StartProcess("cmd", new ProcessSettings {
-          Arguments = "/c \""+ script +"\"",
-          WorkingDirectory = workingDirectory
-        });
+      if (artifact.bundle == null || String.IsNullOrWhiteSpace(artifact.bundle.name))
+      {
+        Error("invalid bundle!");
       }
-      else {
-        Information("invalid bundle type");
-      }*/
+      else
+      {
+        var bundler = cakeGetYaml().bundlers.FirstOrDefault(m => m.name == artifact.bundle.name);
+        if (bundler.steps == null || bundler.steps.Count() == 0)
+        {
+          Information("there are no steps to be executed for the bundler " + bundler.name);
+        }
+        else
+        {
+          foreach(var step in bundler.steps)
+          {
+            var operation = step.operation;
+            if(operation != "copy")
+            {
+              Error("unkown operation " + operation);
+              continue;
+            }
+            var componentName = step.from.component;
+            var component = cakeGetYaml().components.FirstOrDefault(m => m.name == componentName);
+            if (component == null)
+            {
+              Error("unkown component " + componentName);
+              continue;
+            }
+            var fromPath = rootDir + component.path;
+            if (step.from.context == "dist")
+            {
+              fromPath += "/" + component.build.dist;
+            }
+            if (!String.IsNullOrWhiteSpace(step.from.path))
+            {
+              fromPath += "/" + step.from.path;
+            }
+            var toPath = artifactDir;
+            if (!String.IsNullOrWhiteSpace(step.to.path)) {
+              toPath += "/" + step.to.path;
+            }
+            Information("copy from " + fromPath + " to " + toPath);
+            CopyDirectory(fromPath, toPath);
+          }
+        }
+        if (artifact.bundle.enable_compression) {
+            Zip(artifactDir, artifactDir + ".zip");
+        }
+      }
     }
   });
 

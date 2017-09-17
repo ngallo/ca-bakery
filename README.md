@@ -54,10 +54,6 @@ components:
 #     bundlers configuration      #
 #---------------------------------#
 bundlers:
-  - name: electron-bundler
-    imports:
-      - ./recipe-steps.electron.yml
-    steps:
   - name: webapp-bundler
     imports:
     steps:
@@ -80,9 +76,12 @@ bundlers:
           component: client-component
           context: dist
           path:
-          extensions: /**.js/**
+          extensions: "*.js*"
         to:
-          path: src/public/js
+          path: public/js
+  - name: electron-bundler
+    imports:
+    steps:
 #---------------------------------#
 #     artifacts configuration     #
 #---------------------------------#
@@ -95,7 +94,7 @@ artifacts:
   - name: app-electron
     path: app-electron
     bundle:
-      name: webapp-bundler
+      name: electron-bundler
       enable_compression: true
 ```
 
