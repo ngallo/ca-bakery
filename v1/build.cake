@@ -21,9 +21,9 @@ public class EnvKeys
 {
   public const string CakeBuildVersion = "CAKE_BUILD_VERSION";
 
-  public const string AppVeyor= "APPVEYOR";
-  public const string AppVeyorBuildNumber= "APPVEYOR_BUILD_NUMBER";
-  public const string AppVeyorBuildVersion= "APPVEYOR_BUILD_VERSION";
+  public const string AppVeyor = "APPVEYOR";
+  public const string AppVeyorBuildNumber = "APPVEYOR_BUILD_NUMBER";
+  public const string AppVeyorBuildVersion = "APPVEYOR_BUILD_VERSION";
 }
 
 public class CakeYamlBuild
@@ -105,12 +105,12 @@ Action cakeYamlValidateScript = () =>
 
 Func<string> cakeGetBuildNumber = () =>
 {
-  return isAPPVEYOR ? EnvironmentVariable(EnvKey.AppVeyorBuildNumber) : EnvironmentVariable(EnvKeys.CakeBuildVersion);
+  return isAPPVEYOR ? EnvironmentVariable(EnvKeys.AppVeyorBuildNumber) : EnvironmentVariable(EnvKeys.CakeBuildVersion);
 };
 
 Func<string> cakeGetBuildVersion = () =>
 {
-  return isAPPVEYOR ? EnvironmentVariable(EnvKey.APPVEYOR_BUILD_VERSION) : ParseReleaseNotes(cakeYamlGetReleaseNotes()).Version.ToString() + "." + cakeGetBuildNumber();
+  return isAPPVEYOR ? EnvironmentVariable(EnvKeys.AppVeyorBuildVersion) : ParseReleaseNotes(cakeYamlGetReleaseNotes()).Version.ToString() + "." + cakeGetBuildNumber();
 };
 
 Func<String> cakeYamlGetReleaseNotes = () =>
@@ -137,20 +137,20 @@ Func<string[]> cakeYamlLoadEnvironment = () =>
 
 Action<String> BuildComponents = (String npmCommand) =>
 {
-  /*foreach (var component in cakeYml().components)
+  foreach (var component in cakeGetYaml().components)
   {
     Information("component: " + component.name);
     if ((component.build.type ?? "").ToLower() == "npm") {
       Information("running " + npmCommand);
       StartProcess("cmd", new ProcessSettings {
         Arguments = "/c \""+ npmCommand +"\"",
-        WorkingDirectory = MakeAbsolute(Directory(root + component.path))
+        WorkingDirectory = MakeAbsolute(Directory(rootDir + component.path))
       });
     }
     else {
       Information("invalid build type");
     }
-  }*/
+  }
 };
 
 /********** SETUP / TEARDOWN **********/
@@ -207,7 +207,7 @@ Task("Test")
 Task("Package")
   .Does(() =>
   {
-    /*foreach (var artifact in cakeYml().Artifacts)
+    /*foreach (var artifact in cakeGetYaml().Artifacts)
     {
       Information("artifact: " + artifact.Name);
       if ((artifact.BundleType ?? "").ToLower() == "cmd") {

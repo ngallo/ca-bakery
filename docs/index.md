@@ -10,9 +10,9 @@ The custom DSL is used to define:
 
 `ca-bakery` can be used to bundle multiple projects in one single deployable artifact. A common use case would be a web application composed by a NetCore backend project and an Angular client project that need to be bundled into a single deployable artifact where the NetCore app serves to the client the Angular app.
 
-Components to be part of the build process must be defines in the `recipe.yml` file, as well as this they must implement a build script compliant to `ca-bakery`.
+Components to be part of the build process must be defined in the `recipe.yml` file, as well as this they must implement a build script compliant to `ca-bakery`.
 
-The `ca-bakery` pipeline is implemented in a script which can be executed both on the local dev machine and the integration server. This approach makes application based on `ca-bakery` reproducible anywhere.
+The `ca-bakery` pipeline is implemented in a script which can be executed both on the local dev machine and the integration server. This approach makes applications using `ca-bakery` reproducible anywhere.
 
 ![](images/cupcake.png?raw=true)
 
