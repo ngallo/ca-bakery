@@ -169,26 +169,42 @@ readonly DirectoryPath distDirPath = MakeAbsolute(Directory(distDir));
 Setup(context =>
 {
     //Executed BEFORE the first task.
-    // Validate the version of the recipe.yml file
-    cakeYamlValidateScript();
-    // Load the environment variables
-    var envKeys = cakeYamlLoadEnvironment();
-    Information("[ENVIRONMENT]");
-    foreach(var envKey in envKeys)
+    try
     {
-      Information("- {0}={1}", envKey, EnvironmentVariable(envKey));
+      // Validate the version of the recipe.yml file
+      cakeYamlValidateScript();
+      // Load the environment variables
+      var envKeys = cakeYamlLoadEnvironment();
+      Information("[ENVIRONMENT]");
+      foreach(var envKey in envKeys)
+      {
+        Information("- {0}={1}", envKey, EnvironmentVariable(envKey));
+      }
+      // Logging of the settings
+      Information("[SETUP] Build Version {0} of {1}", cakeGetBuildVersion(), cakeGetYaml().name);
+      Information("[WORKING_DIRECTORY] {0}", workingDirPath);
+      Information("[ROOT_DIRECTORY] {0}", rootDirPath);
+      Information("[DIST_DIRECTORY] {0}", distDirPath);
     }
-    // Logging of the settings
-    Information("[SETUP] Build Version {0} of {1}", cakeGetBuildVersion(), cakeGetYaml().name);
-    Information("[WORKING_DIRECTORY] {0}", workingDirPath);
-    Information("[ROOT_DIRECTORY] {0}", rootDirPath);
-    Information("[DIST_DIRECTORY] {0}", distDirPath);
+    catch(Exception exception)
+    {
+      Error("Build Setup Error: "+ exception.Message);
+      throw exception;
+    }
 });
 
 Teardown(context =>
 {
   // Executed AFTER the last task.
-  Information("[Teardown] Build Version {0} of {1}", cakeGetBuildVersion(), cakeGetYaml().name);
+  try
+  {
+    Information("[Teardown] Build Version {0} of {1}", cakeGetBuildVersion(), cakeGetYaml().name);
+  }
+  catch(Exception exception)
+  {
+    Error("Build Setup Error: "+ exception.Message);
+    throw exception;
+  }
 });
 
 /********** TASK TARGETS **********/
@@ -209,6 +225,7 @@ Task("Clean")
   .ReportError(exception =>
   {
     Error("Clean Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("Setup")
@@ -219,6 +236,7 @@ Task("Setup")
   .ReportError(exception =>
   {
     Error("Setup Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("Build")
@@ -229,6 +247,7 @@ Task("Build")
   .ReportError(exception =>
   {
     Error("Build Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("Test")
@@ -239,6 +258,7 @@ Task("Test")
   .ReportError(exception =>
   {
     Error("Test Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("Package")
@@ -320,6 +340,7 @@ Task("Package")
   .ReportError(exception =>
   {
     Error("Package Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("CI")
@@ -330,6 +351,11 @@ Task("CI")
   .Does(() =>
   {
       Information("CI target completed");
+  })
+  .ReportError(exception =>
+  {
+    Error("CI Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("RC")
@@ -341,12 +367,22 @@ Task("RC")
   .Does(() =>
   {
       Information("RC target completed");
+  })
+  .ReportError(exception =>
+  {
+    Error("RC Error: "+ exception.Message);
+    throw exception;
   });
 
 Task("Default")
   .Does(() =>
   {
       Information("Default target completed");
+  })
+  .ReportError(exception =>
+  {
+    Error("Default Error: "+ exception.Message);
+    throw exception;
   });
 
 RunTarget(target);
