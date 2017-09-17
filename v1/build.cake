@@ -231,7 +231,7 @@ Task("Clean")
 Task("Setup")
   .Does(() =>
   {
-    BuildComponents("npm install");
+    BuildComponents("npm run setup");
   })
   .ReportError(exception =>
   {
