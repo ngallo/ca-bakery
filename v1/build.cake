@@ -268,8 +268,18 @@ Task("Package")
             if (!String.IsNullOrWhiteSpace(step.to.path)) {
               toPath += "/" + step.to.path;
             }
-            Information("copy from " + fromPath + " to " + toPath);
-            CopyDirectory(fromPath, toPath);
+
+            if (!String.IsNullOrWhiteSpace(step.from.extensions))
+            {
+              fromPath += "/**/" + step.from.extensions;
+              Information("copy files " + fromPath + " to " + toPath);
+              CopyFiles(GetFiles(fromPath), toPath);
+            }
+            else
+            {
+              Information("copy from " + fromPath + " to " + toPath);
+              CopyDirectory(fromPath, toPath);
+            }
           }
         }
         if (artifact.bundle.enable_compression) {
