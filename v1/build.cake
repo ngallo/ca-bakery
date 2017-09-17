@@ -198,24 +198,40 @@ Task("Clean")
       });
     }
     BuildComponents("npm run clean");
+  })
+  .ReportError(exception =>
+  {
+    Error("Clean Error: "+ exception.Message);
   });
 
 Task("Setup")
   .Does(() =>
   {
     BuildComponents("npm install");
+  })
+  .ReportError(exception =>
+  {
+    Error("Setup Error: "+ exception.Message);
   });
 
 Task("Build")
   .Does(() =>
   {
     BuildComponents("npm run build");
+  })
+  .ReportError(exception =>
+  {
+    Error("Build Error: "+ exception.Message);
   });
 
 Task("Test")
   .Does(() =>
   {
     BuildComponents("npm run test");
+  })
+  .ReportError(exception =>
+  {
+    Error("Test Error: "+ exception.Message);
   });
 
 Task("Package")
@@ -294,7 +310,7 @@ Task("Package")
   })
   .ReportError(exception =>
   {
-    Information("Something went wrong :( " + exception.Message);
+    Error("Package Error: "+ exception.Message);
   });
 
 Task("CI")
