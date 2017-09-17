@@ -1,18 +1,20 @@
 # ca-bakery
 
-`ca-bakery` is a tool based on [cake build](https://cakebuild.net/) which allow you to define your CI pipeline in a `recipe.yml` file which is implemented using a custom DSL (Domain Specific Language).
+`ca-bakery` is a tool based on [cake build](https://cakebuild.net/) which enables you to define your CI/CD pipeline in a `recipe.yml` file which is implemented using a custom DSL (Domain Specific Language).
 
-Using the custom DSL you can define:
+The custom DSL is used to define:
 - **Components:**  *projects part of the CI pipeline*
 - **Environment:** *environment variables used by the CI pipeline*
 - **Bundlers:** *a bundler is a collection of steps to be executed in order to create a bundle*
 - **Artifacts:** *an artifact is a deployable component and it is built using one or more bundlers*
 
-`ca-bakery` can be used also to bundle multple projects in one single deployable artifact. For instance you may be developing a web application composed by a NetCore backend project and an Angular client project as well as this you may want to bundle both applications into a single deployable artifact where the NetCore app would be serving the Angular app to the client.
+`ca-bakery` can be used to bundle multiple projects in one single deployable artifact. A common use case would be a web application composed by a NetCore backend project and an Angular client project that need to be bundled into a single deployable artifact where the NetCore app serves to the client the Angular app.
 
-Using  `ca-bakery`  you need just to make sure projects which are part of the CI pipeline must implement a defined interface and once done you can feed `ca-bakery` with your `recipe.yml` file.
+Components to be part of the build process must be defines in the `recipe.yml` file, as well as this they must implement a build script compliant to `ca-bakery`.
 
-![](images/cupcake.png?raw=true)
+The `ca-bakery` pipeline is implemented in a script which can be executed both on the local dev machine and the integration server. This approach makes application based on `ca-bakery` reproducible anywhere.
+
+![](docs/images/cupcake.png?raw=true)
 
 #### `recipe.yml`:
 ```yaml
@@ -83,7 +85,7 @@ bundlers:
 artifacts:
   - name: app-nodejs
     path: app-nodejs
-    bundler:
+    bundle:
       name: webapp-bundler
       enable_compression: true
   - name: app-electron
