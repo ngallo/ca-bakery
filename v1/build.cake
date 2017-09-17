@@ -291,6 +291,10 @@ Task("Package")
         }
       }
     }
+  })
+  .ReportError(exception =>
+  {
+    Information("Something went wrong :( " + exception.Message);
   });
 
 Task("CI")
