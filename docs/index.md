@@ -14,7 +14,7 @@ Components to be part of the build process must be defines in the `recipe.yml` f
 
 The `ca-bakery` pipeline is implemented in a script which can be executed both on the local dev machine and the integration server. This approach makes application based on `ca-bakery` reproducible anywhere.
 
-![](docs/images/cupcake.png?raw=true)
+![](images/cupcake.png?raw=true)
 
 #### `recipe.yml`:
 ```yaml
