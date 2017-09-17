@@ -93,7 +93,8 @@ Func<CakeYaml> cakeGetYaml = () => { return DeserializeYamlFromFile<CakeYaml>(ro
 Action cakeYamlValidateScript = () =>
 {
   var yamlVersion = cakeGetYaml().version;
-  if (yamlVersion != version) {
+  if (yamlVersion != version)
+  {
     throw new Exception(String.Format("The recipe version is not supported (current supported version is {0}).", version));
   }
 };
@@ -121,10 +122,12 @@ Func<String> cakeYamlGetReleaseNotes = () =>
 
 Func<string[]> cakeYamlLoadEnvironment = () =>
 {
-  if(cakeGetYaml().environment == null) {
+  if(cakeGetYaml().environment == null)
+  {
     return new String[0];
   }
-  foreach(var item in cakeGetYaml().environment) {
+  foreach(var item in cakeGetYaml().environment)
+  {
     Environment.SetEnvironmentVariable(item.Key, item.Value);
   }
   return cakeGetYaml().environment.Keys.ToArray();
@@ -135,14 +138,16 @@ Action<String> BuildComponents = (String npmCommand) =>
   foreach (var component in cakeGetYaml().components)
   {
     Information("component: " + component.name);
-    if ((component.build.type ?? "").ToLower() == "npm") {
+    if ((component.build.type ?? "").ToLower() == "npm")
+    {
       Information("running " + npmCommand);
       StartProcess("cmd", new ProcessSettings {
         Arguments = "/c \""+ npmCommand +"\"",
         WorkingDirectory = MakeAbsolute(Directory(rootDir + component.path))
       });
     }
-    else {
+    else
+    {
       Information("invalid build type");
     }
   }
@@ -169,7 +174,8 @@ Setup(context =>
     // Load the environment variables
     var envKeys = cakeYamlLoadEnvironment();
     Information("[ENVIRONMENT]");
-    foreach(var envKey in envKeys) {
+    foreach(var envKey in envKeys)
+    {
       Information("- {0}={1}", envKey, EnvironmentVariable(envKey));
     }
     // Logging of the settings
@@ -191,7 +197,8 @@ Task("Clean")
   .Does(() =>
   {
     Information("Cleaning the dist directory");
-    if (DirectoryExists(distDir)) {
+    if (DirectoryExists(distDir))
+    {
       DeleteDirectory(distDir, new DeleteDirectorySettings {
         Recursive = true,
         Force = true
@@ -281,7 +288,8 @@ Task("Package")
               fromPath += "/" + step.from.path;
             }
             var toPath = artifactDir;
-            if (!String.IsNullOrWhiteSpace(step.to.path)) {
+            if (!String.IsNullOrWhiteSpace(step.to.path))
+            {
               toPath += "/" + step.to.path;
             }
 
@@ -298,7 +306,8 @@ Task("Package")
             }
           }
         }
-        if (artifact.bundle.enable_compression) {
+        if (artifact.bundle.enable_compression)
+        {
           var zipFile = artifactDir + ".zip";
           Zip(artifactDir, zipFile);
           Information("Creating SHA256 hash for {0} artifact", zipFile);
