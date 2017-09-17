@@ -50,16 +50,22 @@ public class CakeYamlBundler
 public class CakeYamlBundlerOperationSteps
 {
   public string operation { get; set; }
-  public CakeYamlBundlerOperationTarget from { get; set; }
-  public CakeYamlBundlerOperationTarget to { get; set; }
+  public CakeYamlBundlerOperationFromTarget from { get; set; }
+  public CakeYamlBundlerOperationToTarget to { get; set; }
 }
 
-public class CakeYamlBundlerOperationTarget
+public class CakeYamlBundlerOperationFromTarget
 {
   public string component { get; set; }
   public string context { get; set; }
   public string path { get; set; }
   public string extensions { get; set; }
+}
+
+public class CakeYamlBundlerOperationToTarget
+{
+  public string path { get; set; }
+  public bool enable_compression { get; set; }
 }
 
 public class CakeYamlArtifact
@@ -321,8 +327,20 @@ Task("Package")
             }
             else
             {
-              Information("copy from " + fromPath + " to " + toPath);
-              CopyDirectory(fromPath, toPath);
+              if (step.to.enable_compression)
+              {
+                Information("copy with compression from " + fromPath + " to " + toPath);
+                var tempName = Guid.NewGuid().ToString();
+                var zipFile = artifactDir + "/" + tempName + ".zip";
+                Zip(fromPath, zipFile);
+                Unzip(zipFile, toPath);
+                DeleteFile(zipFile);
+              }
+              else
+              {
+                Information("copy from " + fromPath + " to " + toPath);
+                CopyDirectory(fromPath, toPath);
+              }
             }
           }
         }
