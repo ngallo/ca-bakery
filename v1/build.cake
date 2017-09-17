@@ -4,11 +4,6 @@ readonly var target = Argument("target", "Default");
 readonly var rootDir = Argument("root", "../../");
 readonly var cake = Argument("recipe", "recipe.yml");
 
-/********** GLOBAL VARIABLES **********/
-
-readonly int version = 1;
-readonly bool isAPPVEYOR = (EnvironmentVariable(EnvKeys.AppVeyor) ?? "").ToUpper() == "TRUE";
-
 /********** TOOLS & ADDINS **********/
 
 #addin "Cake.FileHelpers"
@@ -153,6 +148,17 @@ Action<String> BuildComponents = (String npmCommand) =>
   }
 };
 
+/********** GLOBAL VARIABLES **********/
+
+readonly int version = 1;
+
+readonly bool isAPPVEYOR = (EnvironmentVariable(EnvKeys.AppVeyor) ?? "").ToUpper() == "TRUE";
+
+readonly DirectoryPath workingDirPath = MakeAbsolute(Directory("."));
+readonly DirectoryPath rootDirPath = MakeAbsolute(Directory(rootDir));
+readonly string distDir = rootDir + cakeGetYaml().build.dist;
+readonly DirectoryPath distDirPath = MakeAbsolute(Directory(distDir));
+
 /********** SETUP / TEARDOWN **********/
 
 Setup(context =>
@@ -168,8 +174,9 @@ Setup(context =>
     }
     // Logging of the settings
     Information("[SETUP] Build Version {0} of {1}", cakeGetBuildVersion(), cakeGetYaml().name);
-    Information("[WORKING_DIRECTORY] {0}", MakeAbsolute(Directory(".")));
-    Information("[ROOT_DIRECTORY] {0}", MakeAbsolute(Directory(rootDir)));
+    Information("[WORKING_DIRECTORY] {0}", workingDirPath);
+    Information("[ROOT_DIRECTORY] {0}", rootDirPath);
+    Information("[DIST_DIRECTORY] {0}", distDirPath);
 });
 
 Teardown(context =>
@@ -207,10 +214,13 @@ Task("Test")
 Task("Package")
   .Does(() =>
   {
-    /*foreach (var artifact in cakeGetYaml().Artifacts)
+    foreach (var artifact in cakeGetYaml().artifacts)
     {
-      Information("artifact: " + artifact.Name);
-      if ((artifact.BundleType ?? "").ToLower() == "cmd") {
+      Information("creating artifact " + artifact.name);
+      var artifactDir = distDir + "/" + artifact.path;
+      var artifactDirPath = MakeAbsolute(Directory(artifactDir));
+      CreateDirectory(artifactDirPath);
+      /*if ((artifact.BundleType ?? "").ToLower() == "cmd") {
         var workingDirectory =  MakeAbsolute(Directory("."));
         Information("working directory: " + workingDirectory);
         var script = "bundle-" + artifact.Name + ".cmd";
@@ -222,8 +232,8 @@ Task("Package")
       }
       else {
         Information("invalid bundle type");
-      }
-    }*/
+      }*/
+    }
   });
 
 Task("CI")
