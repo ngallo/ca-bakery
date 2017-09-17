@@ -335,7 +335,7 @@ Task("Package")
           FileWriteText(zipFileHashPath, CalculateFileHash(zipFile).ToHex());
         }
         var releaseNotes = cakeYamlGetReleaseNotes();
-        if (String.IsNullOrWhiteSpace(releaseNotes))
+        if (!String.IsNullOrWhiteSpace(releaseNotes))
         {
           CopyFile(releaseNotes, artifactDir + "/RELEASE_NOTES.md");
         }
