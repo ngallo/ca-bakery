@@ -283,7 +283,11 @@ Task("Package")
           }
         }
         if (artifact.bundle.enable_compression) {
-            Zip(artifactDir, artifactDir + ".zip");
+          var zipFile = artifactDir + ".zip";
+          Zip(artifactDir, zipFile);
+          Information("Creating SHA256 hash for {0} artifact", zipFile);
+          var zipFileHashPath = MakeAbsolute(File(zipFile + ".hash"));
+          FileWriteText(zipFileHashPath, CalculateFileHash(zipFile).ToHex());
         }
       }
     }
