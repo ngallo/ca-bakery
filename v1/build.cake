@@ -139,7 +139,7 @@ Func<string[]> cakeYamlLoadEnvironment = () =>
   return cakeGetYaml().environment.Keys.ToArray();
 };
 
-Action<String> BuildComponents = (String npmCommand) =>
+Action<String> BuildComponents = (String npmCommand, String yarnCommand) =>
 {
   foreach (var component in cakeGetYaml().components)
   {
@@ -149,6 +149,14 @@ Action<String> BuildComponents = (String npmCommand) =>
       Information("running " + npmCommand);
       StartProcess("cmd", new ProcessSettings {
         Arguments = "/c \""+ npmCommand +"\"",
+        WorkingDirectory = MakeAbsolute(Directory(rootDir + component.path))
+      });
+    }
+    else if ((component.build.type ?? "").ToLower() == "yarn")
+    {
+      Information("running " + yarnCommand);
+      StartProcess("cmd", new ProcessSettings {
+        Arguments = "/c \""+ yarnCommand +"\"",
         WorkingDirectory = MakeAbsolute(Directory(rootDir + component.path))
       });
     }
@@ -226,7 +234,7 @@ Task("Clean")
         Force = true
       });
     }
-    BuildComponents("npm run clean");
+    BuildComponents("npm run clean", "yarn clean");
   })
   .ReportError(exception =>
   {
@@ -237,7 +245,7 @@ Task("Clean")
 Task("Setup")
   .Does(() =>
   {
-    BuildComponents("npm run setup");
+    BuildComponents("npm run setup", "yarn --force");
   })
   .ReportError(exception =>
   {
@@ -248,7 +256,7 @@ Task("Setup")
 Task("Build")
   .Does(() =>
   {
-    BuildComponents("npm run build");
+    BuildComponents("npm run build", "yarn build");
   })
   .ReportError(exception =>
   {
@@ -259,7 +267,7 @@ Task("Build")
 Task("Test")
   .Does(() =>
   {
-    BuildComponents("npm run test");
+    BuildComponents("npm run test", , "yarn test");
   })
   .ReportError(exception =>
   {
