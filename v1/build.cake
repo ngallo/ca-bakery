@@ -73,12 +73,19 @@ public class CakeYamlArtifact
   public string name { get; set; }
   public string path { get; set; }
   public CakeYamlArtifactBundle bundle { get; set; }
+  public CakeYamlArtifactDeployment deployment { get; set; }
 }
 
 public class CakeYamlArtifactBundle
 {
   public string name { get; set; }
   public bool enable_compression { get; set; }
+}
+
+public class CakeYamlArtifactDeployment
+{
+  public string type { get; set; }
+  public string script { get; set; }
 }
 
 public class CakeYaml
@@ -139,7 +146,7 @@ Func<string[]> cakeYamlLoadEnvironment = () =>
   return cakeGetYaml().environment.Keys.ToArray();
 };
 
-Action<String> BuildComponents = (String npmCommand, String yarnCommand) =>
+Action<String, String> BuildComponents = (String npmCommand, String yarnCommand) =>
 {
   foreach (var component in cakeGetYaml().components)
   {
@@ -234,7 +241,7 @@ Task("Clean")
         Force = true
       });
     }
-    BuildComponents("npm run clean", "yarn clean");
+    BuildComponents("npm run clean", "npm run clean");
   })
   .ReportError(exception =>
   {
@@ -267,7 +274,7 @@ Task("Build")
 Task("Test")
   .Does(() =>
   {
-    BuildComponents("npm run test", , "yarn test");
+    BuildComponents("npm run test", "yarn test");
   })
   .ReportError(exception =>
   {
@@ -374,6 +381,29 @@ Task("Package")
     throw exception;
   });
 
+Task("Deploy")
+  .Does(() =>
+  {
+    foreach (var artifact in cakeGetYaml().artifacts)
+    {
+      Information("deploying artifact " + artifact.name);
+      var artifactDir = distDir + "/" + artifact.path;
+      var deploy = artifact.deployment;
+      if (deploy.type != "npm") {
+        Information("artifact cannot be deployed");
+      }
+      StartProcess("cmd", new ProcessSettings {
+        Arguments = "/c \"npm publish\"",
+        WorkingDirectory = MakeAbsolute(Directory(artifactDir))
+      });
+    }
+  })
+  .ReportError(exception =>
+  {
+    Error("Deployment Error: "+ exception.Message);
+    throw exception;
+  });
+
 Task("CI")
   .IsDependentOn("Clean")
   .IsDependentOn("Setup")
@@ -393,7 +423,7 @@ Task("RC")
   .IsDependentOn("Clean")
   .IsDependentOn("Setup")
   .IsDependentOn("Build")
-  //.IsDependentOn("Test")
+  .IsDependentOn("Test")
   .IsDependentOn("Package")
   .Does(() =>
   {
@@ -402,6 +432,19 @@ Task("RC")
   .ReportError(exception =>
   {
     Error("RC Error: "+ exception.Message);
+    throw exception;
+  });
+
+Task("Release")
+  .IsDependentOn("RC")
+  .IsDependentOn("Deploy")
+  .Does(() =>
+  {
+      Information("Release target completed");
+  })
+  .ReportError(exception =>
+  {
+    Error("Release Error: "+ exception.Message);
     throw exception;
   });
 
