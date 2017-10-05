@@ -436,7 +436,7 @@ Task("RC")
     throw exception;
   });
 
-Task("Release")
+Task("RCDeploy")
   .IsDependentOn("RC")
   .IsDependentOn("Deploy")
   .Does(() =>
