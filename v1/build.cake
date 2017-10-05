@@ -424,7 +424,7 @@ Task("RC")
   .IsDependentOn("Clean")
   .IsDependentOn("Setup")
   .IsDependentOn("Build")
-  //.IsDependentOn("Test")
+  .IsDependentOn("Test")
   .IsDependentOn("Package")
   .Does(() =>
   {
