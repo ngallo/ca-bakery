@@ -8,7 +8,8 @@ readonly var cake = Argument("recipe", "recipe.yml");
 
 #addin "Cake.FileHelpers"
 
-#addin "Cake.Yaml"
+#addin nuget:?package=Cake.Yaml
+#addin nuget:?package=YamlDotNet&version=4.2.1
 
 /********** TYPES **********/
 
