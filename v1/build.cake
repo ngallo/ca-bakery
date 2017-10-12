@@ -409,7 +409,7 @@ Task("CI")
   .IsDependentOn("Clean")
   .IsDependentOn("Setup")
   .IsDependentOn("Build")
-  .IsDependentOn("Test")
+  //.IsDependentOn("Test")
   .Does(() =>
   {
       Information("CI target completed");
@@ -424,7 +424,7 @@ Task("RC")
   .IsDependentOn("Clean")
   .IsDependentOn("Setup")
   .IsDependentOn("Build")
-  .IsDependentOn("Test")
+  //.IsDependentOn("Test")
   .IsDependentOn("Package")
   .Does(() =>
   {
