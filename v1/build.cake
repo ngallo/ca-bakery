@@ -364,9 +364,9 @@ Task("Package")
         {
           var zipFile = artifactDir + ".zip";
           Zip(artifactDir, zipFile);
-          Information("Creating SHA256 hash for {0} artifact", zipFile);
-          var zipFileHashPath = MakeAbsolute(File(zipFile + ".hash"));
-          FileWriteText(zipFileHashPath, CalculateFileHash(zipFile).ToHex());
+          Information("Creating MD5 hash for {0} artifact", zipFile);
+          var zipFileHashPath = MakeAbsolute(File(zipFile + ".checksum "));
+          FileWriteText(zipFileHashPath, CalculateFileHash(zipFile, HashAlgorithm.MD5).ToHex());
         }
         var releaseNotes = cakeYamlGetReleaseNotes();
         if (!String.IsNullOrWhiteSpace(releaseNotes))
